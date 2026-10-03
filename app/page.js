@@ -1,3 +1,5 @@
+import WalletButton from "../components/WalletButton";
+
 const campaigns = [
   {
     id: "crypto-meme",
@@ -41,9 +43,7 @@ export default function Home() {
           <a href="#how-it-works">How it works</a>
         </div>
 
-        <button className="nav-button" type="button">
-          Create campaign
-        </button>
+        <WalletButton />
       </nav>
 
       <section className="hero">
