@@ -2,6 +2,7 @@
 
 import {
   useConnect,
+  useConnectedWallet,
   useDisconnect,
   useWallets,
   useWalletStatus
@@ -12,21 +13,31 @@ import { useClient } from "@solana/react";
 export default function WalletButton() {
   const client = useClient();
 
-  const wallets = useWallets(client);
   const status = useWalletStatus(client);
-  const { connect } = useConnect(client);
-  const { disconnect } = useDisconnect(client);
+  const wallets = useWallets(client);
+  const connected = useConnectedWallet(client);
 
-  const connected = status === "connected";
+  const connect = useConnect(client);
+  const disconnect = useDisconnect(client);
+
+  if (status === "pending") {
+    return (
+      <button className="nav-button" type="button" disabled>
+        Loading...
+      </button>
+    );
+  }
 
   if (connected) {
+    const address = connected.account.address;
+
     return (
       <button
         className="nav-button"
         type="button"
-        onClick={() => disconnect()}
+        onClick={() => disconnect.dispatch()}
       >
-        Disconnect
+        {address.slice(0, 4)}...{address.slice(-4)}
       </button>
     );
   }
@@ -35,13 +46,14 @@ export default function WalletButton() {
     <button
       className="nav-button"
       type="button"
+      disabled={connect.isRunning || wallets.length === 0}
       onClick={() => {
         if (wallets.length > 0) {
-          connect(wallets[0]);
+          connect.dispatch(wallets[0]);
         }
       }}
     >
-      Connect Wallet
+      {wallets.length === 0 ? "No Wallet" : "Connect Wallet"}
     </button>
   );
 }
