@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const campaigns = {
   "crypto-meme": {
     project: "Example Protocol",
@@ -51,9 +55,17 @@ const campaigns = {
   }
 };
 
-export default async function CampaignPage({ params }) {
-  const { id } = await params;
-  const campaign = campaigns[id];
+export default function CampaignPage({ params }) {
+  const [campaignId, setCampaignId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  if (!campaignId) {
+    params.then((value) => setCampaignId(value.id));
+    return null;
+  }
+
+  const campaign = campaigns[campaignId];
 
   if (!campaign) {
     return (
@@ -65,7 +77,9 @@ export default async function CampaignPage({ params }) {
 
           <div className="campaign-not-found">
             <div className="section-label">CAMPAIGN</div>
+
             <h1>Campaign not found.</h1>
+
             <p>
               This campaign does not exist or is no longer available.
             </p>
@@ -114,10 +128,14 @@ export default async function CampaignPage({ params }) {
             {campaign.description}
           </p>
 
-          <a href="#submit" className="campaign-primary-button">
+          <button
+            className="campaign-primary-button"
+            type="button"
+            onClick={() => setShowForm(true)}
+          >
             Submit entry
             <span>→</span>
-          </a>
+          </button>
         </header>
 
         <section className="campaign-stats">
@@ -188,6 +206,7 @@ export default async function CampaignPage({ params }) {
               <button
                 className="campaign-primary-button submit-button"
                 type="button"
+                onClick={() => setShowForm(true)}
               >
                 Submit entry
                 <span>→</span>
@@ -197,7 +216,9 @@ export default async function CampaignPage({ params }) {
 
           <aside className="campaign-sidebar">
             <div className="sidebar-card">
-              <div className="section-label">CAMPAIGN INFO</div>
+              <div className="section-label">
+                CAMPAIGN INFO
+              </div>
 
               <div className="sidebar-row">
                 <span>Project</span>
@@ -240,6 +261,7 @@ export default async function CampaignPage({ params }) {
 
             <div>
               <h3>Submissions will appear here.</h3>
+
               <p>
                 Creator entries will be displayed here once
                 submissions are connected.
@@ -247,6 +269,81 @@ export default async function CampaignPage({ params }) {
             </div>
           </div>
         </section>
+
+        {showForm && (
+          <section className="submission-form-section">
+            <div className="submission-form-card">
+              <div className="section-label">
+                SUBMIT ENTRY
+              </div>
+
+              {submitted ? (
+                <div className="submission-success">
+                  <div className="section-label">
+                    SUBMITTED
+                  </div>
+
+                  <h2>Entry received.</h2>
+
+                  <p>
+                    Your submission has been added to this
+                    campaign.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <h2>Submit your work</h2>
+
+                  <p>
+                    Add your content, X post and payout wallet.
+                  </p>
+
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      setSubmitted(true);
+                    }}
+                  >
+                    <label>
+                      Your work
+                      <input
+                        type="file"
+                        accept="image/*"
+                        required
+                      />
+                    </label>
+
+                    <label>
+                      X post link
+                      <input
+                        type="url"
+                        placeholder="https://x.com/..."
+                        required
+                      />
+                    </label>
+
+                    <label>
+                      Payout wallet
+                      <input
+                        type="text"
+                        placeholder="Enter your wallet address"
+                        required
+                      />
+                    </label>
+
+                    <button
+                      className="campaign-primary-button"
+                      type="submit"
+                    >
+                      Submit entry
+                      <span>→</span>
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+          </section>
+        )}
 
         <footer className="campaign-footer">
           <span>LERIVO</span>
