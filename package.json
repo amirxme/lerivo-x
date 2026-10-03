@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "next": "15.5.7",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "@solana/kit": "8.4.0",
     "@solana/react": "8.4.0",
     "@solana/kit-plugin-wallet": "0.20.0"
