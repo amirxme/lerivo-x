@@ -1,8 +1,172 @@
+const campaigns = [
+  {
+    title: "Create the next crypto meme",
+    project: "Example Protocol",
+    prize: "$2,500",
+    entries: 42,
+    deadline: "3d 12h",
+    tag: "MEMES"
+  },
+  {
+    title: "Make Web3 understandable",
+    project: "Open Network",
+    prize: "$1,000",
+    entries: 18,
+    deadline: "5d 08h",
+    tag: "CONTENT"
+  },
+  {
+    title: "Community campaign",
+    project: "New Protocol",
+    prize: "$750",
+    entries: 27,
+    deadline: "2d 04h",
+    tag: "CREATIVE"
+  }
+];
+
 export default function Home() {
   return (
-    <main>
-      <h1>LERIVO</h1>
-      <p>Create campaigns. Reward creators.</p>
+    <main className="site">
+      <nav className="navbar">
+        <div className="logo">LERIVO</div>
+
+        <div className="nav-links">
+          <a href="#campaigns">Campaigns</a>
+          <a href="#how-it-works">How it works</a>
+        </div>
+
+        <button className="nav-button">Create campaign</button>
+      </nav>
+
+      <section className="hero">
+        <div className="hero-content">
+          <div className="eyebrow">
+            <span className="status-dot" />
+            THE CREATOR CAMPAIGN PLATFORM
+          </div>
+
+          <h1>
+            Create.
+            <br />
+            <span>Earn.</span>
+            <br />
+            Repeat.
+          </h1>
+
+          <p>
+            LERIVO connects Web3 projects with creators through
+            campaigns, contests and rewards.
+          </p>
+
+          <div className="hero-actions">
+            <a href="#campaigns" className="primary-button">
+              Explore campaigns
+              <span>→</span>
+            </a>
+
+            <a href="#how-it-works" className="secondary-button">
+              How it works
+            </a>
+          </div>
+        </div>
+
+        <div className="hero-meta">
+          <div>
+            <span>01</span>
+            CAMPAIGNS
+          </div>
+          <div>
+            <span>02</span>
+            CREATORS
+          </div>
+          <div>
+            <span>03</span>
+            REWARDS
+          </div>
+        </div>
+      </section>
+
+      <section id="campaigns" className="campaign-section">
+        <div className="section-header">
+          <div>
+            <div className="section-label">LIVE NOW</div>
+            <h2>Active campaigns</h2>
+          </div>
+
+          <a href="#campaigns" className="view-all">
+            View all <span>→</span>
+          </a>
+        </div>
+
+        <div className="campaign-grid">
+          {campaigns.map((campaign) => (
+            <article className="campaign-card" key={campaign.title}>
+              <div className="card-top">
+                <span className="campaign-tag">{campaign.tag}</span>
+                <span className="deadline">{campaign.deadline} left</span>
+              </div>
+
+              <div className="card-main">
+                <div className="project-name">{campaign.project}</div>
+                <h3>{campaign.title}</h3>
+              </div>
+
+              <div className="card-bottom">
+                <div>
+                  <span className="data-label">PRIZE POOL</span>
+                  <strong>{campaign.prize}</strong>
+                </div>
+
+                <div>
+                  <span className="data-label">ENTRIES</span>
+                  <strong>{campaign.entries}</strong>
+                </div>
+
+                <span className="arrow">↗</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="how-it-works" className="process-section">
+        <div className="section-label">THE PROCESS</div>
+
+        <div className="process-grid">
+          <div>
+            <span>01</span>
+            <h3>Campaign</h3>
+            <p>
+              Projects launch a campaign with a brief, rules,
+              deadline and reward.
+            </p>
+          </div>
+
+          <div>
+            <span>02</span>
+            <h3>Create</h3>
+            <p>
+              Creators turn the brief into content and submit
+              their work.
+            </p>
+          </div>
+
+          <div>
+            <span>03</span>
+            <h3>Reward</h3>
+            <p>
+              Projects review submissions and reward the
+              creators they choose.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <div className="logo">LERIVO</div>
+        <span>Campaigns for creators.</span>
+      </footer>
     </main>
   );
 }
