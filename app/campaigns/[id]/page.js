@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 const campaigns = {
   "crypto-meme": {
@@ -56,16 +56,11 @@ const campaigns = {
 };
 
 export default function CampaignPage({ params }) {
-  const [campaignId, setCampaignId] = useState(null);
+  const { id } = use(params);
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  if (!campaignId) {
-    params.then((value) => setCampaignId(value.id));
-    return null;
-  }
-
-  const campaign = campaigns[campaignId];
+  const campaign = campaigns[id];
 
   if (!campaign) {
     return (
