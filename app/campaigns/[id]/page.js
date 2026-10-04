@@ -1,6 +1,10 @@
 "use client";
 
 import { use, useState } from "react";
+import { useClient } from "@solana/react";
+import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
+
+import WalletButton from "../../../components/WalletButton";
 
 const campaigns = {
   "crypto-meme": {
@@ -16,7 +20,7 @@ const campaigns = {
       "Create an original meme",
       "Keep the content related to Example Protocol",
       "Post your work on X",
-      "Submit the X post link and your payout wallet"
+      "Submit the X post link"
     ]
   },
 
@@ -33,7 +37,7 @@ const campaigns = {
       "Create original educational content",
       "Keep the explanation simple and accessible",
       "Post your work on X",
-      "Submit the X post link and your payout wallet"
+      "Submit the X post link"
     ]
   },
 
@@ -50,17 +54,23 @@ const campaigns = {
       "Create original creative content",
       "Make the content suitable for the community",
       "Post your work on X",
-      "Submit the X post link and your payout wallet"
+      "Submit the X post link"
     ]
   }
 };
 
 export default function CampaignPage({ params }) {
   const { id } = use(params);
+
+  const client = useClient();
+  const connectedWallet = useConnectedWallet(client);
+
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const campaign = campaigns[id];
+
+  const walletAddress = connectedWallet?.account?.address || null;
 
   if (!campaign) {
     return (
@@ -97,9 +107,13 @@ export default function CampaignPage({ params }) {
             LERIVO
           </a>
 
-          <a href="/" className="campaign-back">
-            ← All campaigns
-          </a>
+          <div className="campaign-nav-actions">
+            <a href="/" className="campaign-back">
+              ← All campaigns
+            </a>
+
+            <WalletButton />
+          </div>
         </nav>
 
         <header className="campaign-hero">
@@ -194,8 +208,9 @@ export default function CampaignPage({ params }) {
               <h2>Ready to enter?</h2>
 
               <p>
-                Submit your work with the required information.
-                Winners are selected by the campaign organizer.
+                Connect your Solana wallet and submit your work.
+                Your wallet will be associated with the entry
+                automatically.
               </p>
 
               <button
@@ -290,17 +305,24 @@ export default function CampaignPage({ params }) {
                   <h2>Submit your work</h2>
 
                   <p>
-                    Add your content, X post and payout wallet.
+                    Add your content and X post. Your connected
+                    Solana wallet will be linked automatically.
                   </p>
 
                   <form
                     onSubmit={(event) => {
                       event.preventDefault();
+
+                      if (!walletAddress) {
+                        return;
+                      }
+
                       setSubmitted(true);
                     }}
                   >
                     <label>
                       Your work
+
                       <input
                         type="file"
                         accept="image/*"
@@ -310,6 +332,7 @@ export default function CampaignPage({ params }) {
 
                     <label>
                       X post link
+
                       <input
                         type="url"
                         placeholder="https://x.com/..."
@@ -317,18 +340,31 @@ export default function CampaignPage({ params }) {
                       />
                     </label>
 
-                    <label>
-                      Payout wallet
-                      <input
-                        type="text"
-                        placeholder="Enter your wallet address"
-                        required
-                      />
-                    </label>
+                    <div className="wallet-status">
+                      <span className="data-label">
+                        CONNECTED WALLET
+                      </span>
+
+                      {walletAddress ? (
+                        <strong>
+                          {walletAddress.slice(0, 6)}...
+                          {walletAddress.slice(-6)}
+                        </strong>
+                      ) : (
+                        <span>
+                          Connect your wallet to submit.
+                        </span>
+                      )}
+                    </div>
+
+                    {!walletAddress && (
+                      <WalletButton />
+                    )}
 
                     <button
                       className="campaign-primary-button"
                       type="submit"
+                      disabled={!walletAddress}
                     >
                       Submit entry
                       <span>→</span>
