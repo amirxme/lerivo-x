@@ -9,8 +9,23 @@ export default function WalletButton() {
     disconnectWallet,
     isConnected,
     isConnecting,
+    isError,
+    walletError,
     account
   } = useConnector();
+
+  if (isError) {
+    return (
+      <button
+        className="nav-button"
+        type="button"
+        disabled
+        title={walletError?.message || "Wallet connection error"}
+      >
+        Wallet Error
+      </button>
+    );
+  }
 
   if (isConnected && account) {
     return (
@@ -26,32 +41,37 @@ export default function WalletButton() {
 
   if (isConnecting) {
     return (
-      <button className="nav-button" type="button" disabled>
+      <button
+        className="nav-button"
+        type="button"
+        disabled
+      >
         Connecting...
       </button>
     );
   }
 
-  const readyConnectors = connectors.filter(
-    (connector) => connector.ready
-  );
-
-  if (readyConnectors.length === 0) {
+  if (!connectors || connectors.length === 0) {
     return (
-      <button className="nav-button" type="button" disabled>
-        No Wallet
+      <button
+        className="nav-button"
+        type="button"
+        disabled
+      >
+        No Wallets
       </button>
     );
   }
 
   return (
     <div className="wallet-connect-group">
-      {readyConnectors.map((connector) => (
+      {connectors.map((connector) => (
         <button
           key={connector.id}
           className="nav-button"
           type="button"
           onClick={() => connectWallet(connector.id)}
+          disabled={isConnecting || !connector.ready}
         >
           Connect {connector.name}
         </button>
