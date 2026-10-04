@@ -1,8 +1,7 @@
 "use client";
 
 import { use, useState } from "react";
-import { useClient } from "@solana/react";
-import { useConnectedWallet } from "@solana/kit-plugin-wallet/react";
+import { useConnector } from "@solana/connector/react";
 
 import WalletButton from "../../../components/WalletButton";
 
@@ -62,15 +61,15 @@ const campaigns = {
 export default function CampaignPage({ params }) {
   const { id } = use(params);
 
-  const client = useClient();
-  const connectedWallet = useConnectedWallet(client);
+  const { account, isConnected } = useConnector();
 
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const campaign = campaigns[id];
 
-  const walletAddress = connectedWallet?.account?.address || null;
+  const walletAddress =
+    isConnected && account ? account : null;
 
   if (!campaign) {
     return (
@@ -89,7 +88,10 @@ export default function CampaignPage({ params }) {
               This campaign does not exist or is no longer available.
             </p>
 
-            <a href="/" className="campaign-primary-button">
+            <a
+              href="/"
+              className="campaign-primary-button"
+            >
               Browse campaigns
               <span>→</span>
             </a>
@@ -167,7 +169,9 @@ export default function CampaignPage({ params }) {
         <section className="campaign-content">
           <div className="campaign-main-column">
             <div className="campaign-section-block">
-              <div className="section-label">THE BRIEF</div>
+              <div className="section-label">
+                THE BRIEF
+              </div>
 
               <h2>What to create</h2>
 
@@ -179,23 +183,27 @@ export default function CampaignPage({ params }) {
             </div>
 
             <div className="campaign-section-block">
-              <div className="section-label">REQUIREMENTS</div>
+              <div className="section-label">
+                REQUIREMENTS
+              </div>
 
               <h2>Rules</h2>
 
               <div className="requirements-list">
-                {campaign.requirements.map((requirement, index) => (
-                  <div
-                    className="requirement"
-                    key={requirement}
-                  >
-                    <span>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
+                {campaign.requirements.map(
+                  (requirement, index) => (
+                    <div
+                      className="requirement"
+                      key={requirement}
+                    >
+                      <span>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
 
-                    <p>{requirement}</p>
-                  </div>
-                ))}
+                      <p>{requirement}</p>
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
@@ -203,7 +211,9 @@ export default function CampaignPage({ params }) {
               id="submit"
               className="campaign-submit-block"
             >
-              <div className="section-label">SUBMIT</div>
+              <div className="section-label">
+                SUBMIT
+              </div>
 
               <h2>Ready to enter?</h2>
 
@@ -259,7 +269,9 @@ export default function CampaignPage({ params }) {
         </section>
 
         <section className="submissions-section">
-          <div className="section-label">SUBMISSIONS</div>
+          <div className="section-label">
+            SUBMISSIONS
+          </div>
 
           <div className="submissions-header">
             <h2>Creator entries</h2>
