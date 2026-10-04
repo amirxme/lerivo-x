@@ -5,7 +5,8 @@ import {
   useConnectedWallet,
   useDisconnect,
   useWallets,
-  useWalletStatus
+  useWalletStatus,
+  useIsWalletReady
 } from "@solana/kit-plugin-wallet/react";
 
 import { useClient } from "@solana/react";
@@ -16,11 +17,12 @@ export default function WalletButton() {
   const status = useWalletStatus(client);
   const wallets = useWallets(client);
   const connected = useConnectedWallet(client);
+  const isReady = useIsWalletReady(client);
 
   const connect = useConnect(client);
   const disconnect = useDisconnect(client);
 
-  if (status === "pending") {
+  if (!isReady || status === "pending" || status === "reconnecting") {
     return (
       <button className="nav-button" type="button" disabled>
         Loading...
@@ -42,18 +44,24 @@ export default function WalletButton() {
     );
   }
 
+  if (wallets.length === 0) {
+    return (
+      <button className="nav-button" type="button" disabled>
+        No Wallet
+      </button>
+    );
+  }
+
   return (
     <button
       className="nav-button"
       type="button"
-      disabled={connect.isRunning || wallets.length === 0}
+      disabled={connect.isRunning}
       onClick={() => {
-        if (wallets.length > 0) {
-          connect.dispatch(wallets[0]);
-        }
+        connect.dispatch(wallets[0]);
       }}
     >
-      {wallets.length === 0 ? "No Wallet" : "Connect Wallet"}
+      {connect.isRunning ? "Connecting..." : "Connect Wallet"}
     </button>
   );
 }
